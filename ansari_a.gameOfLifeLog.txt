@@ -1,0 +1,94 @@
+//Adjua Ali Ansari
+
+//CS 385
+
+//Homework 10
+
+//Dec. 6, 2019
+
+
+1. Crash on line 49: r undefined in countLivingNeighbors function:
+   Solution: line 49: set var in front of r.
+
+2. Error on line 49: r row-1: 
+   Solution: line 49: change to r = row-1
+
+3. Uncaught ReferenceError on line 31: ROWS=3 variable undefined:
+   Solution: line 31-34: set var at ROWS, CLMS, LIVE, and DEAD variable definitions (ex: var ROWS=3)
+
+4. line 65: "cells" undefined in myTimer function:
+   Solution: line 65: "cells" initialized with var (defined as: var cells)
+
+5. i is undefined on line 68:
+   Solution: line 67: set var before i initialization (var i) for initialization
+
+6. livingNeighbors undefined on line 48:
+   Solution: set var before livingNeighbors definition for initialization
+
+7. line 72: ERROR: newCells undefined:
+   Solution: line 39: set new value var newCells = [].
+
+8. line 70-72: switch statement only returns default, despite more than
+   two live cells in row from cells[i];
+   Solution: line 53,70: .innerHTML added to conditional statement in order to call forth the attribute
+   of the cells[i] (cells[i].innerHTML).
+
+9. line 68: when "i" is higher than 0, returns a fraction as the row for the condition;
+   Solution: line 68 - row parameter for countLivingNeighbors function set to i%ROWS in order to set to
+   before current row.
+
+10. Boolean variable timerStopped added to script and set to false as default:
+    timerStopped variable to be used for condition for whether or not to go along 
+    with evaluations in the myTimer function:
+    i.e. if timerStopped == false, goes through processes; else do nothing.
+
+11. stopTimer function added; when function is called, reverses the boolean result from
+    timerStopped.
+
+12. Created button in html for stopping and starting timer evaluation;
+    onClick for button set to stopTimer function so that myTimer function 
+    stops process and screen freezes in order to plot points without interruption
+
+13. row and clm conditions for loop stop just before going past current index;
+    Solution: conditions changed from < to <= to get to row/column neighbor succeeding index.
+    (ex. r <= row+1 )
+
+14. Cells in array are evaluated in as a matrix in countLivingNeighbors function, causing
+    a disposition in evaluation process, as there is no way to define rows and columns in array.
+    Solution: Created row and clm variables set to 0 in myTimer function;
+    if statement added in for loop for conditions for what row and column the specified cell 
+    wraparound in hypothetical matrix: 
+    (if(i > 1 && i%CMLS == 0)) { ++row; clm=0; } - if the cell index is divisible by the number of columns,
+    then the row is incremented(row is incremented after each column has been evaluated) and reset the column
+    the the 0th index;
+    Thus, when myTimer function uses countLivingNeighbors function, row and clm can be used for row and clm
+    parameters.
+
+15. Condition for case 2 in switch statement in myTimer function doesn't have condition for
+    defining newCells cell instance if cell is dead; newCell thus returns null if cell is dead
+    Solution: line : newCells[i] set to become cell[i].innerHTML since it doesn't cell either stays
+    dead if already dead or alive if already alive with only two living neighbors.
+
+16. Changed properties of the background color of cells:
+    black if cells are alive, white or black if they are dead;
+    set two variables: LiveColor, DeadColor which return string values of respective colors;
+    LiveColor set to "black"; DeadColor set to "white"
+
+17. switch statement added to myTimer function in loop for transferring newCells array variables
+    as cells[i].innerHTML; 
+    switch statements evaluates current cells[i].innerHTML to tell assign background color to cell.
+
+18. Table has 6 td defintions instead of 3;
+    Changed properties in table html definition with width and height being same size;
+    Changed properties of each cell in table definiton so that each cell takes 10% of; 
+    table's width and height;
+    Set ROWS and CLMS to 6 as per the number of td defintions 
+
+19. In flipCell function, target's background color is flipped along with the target's innerHTML;
+    evaluates by looking at whether target.style.backgroundColor is set to LiveColor or DeadColor.
+
+20. Set <center> attribute to encapsulate freeze/unfreeze button, table, and timer.
+
+21. Set background color for <body> to "lightGrey"; set background color of table to white:
+    needed in order to tell where table is on html page 
+    

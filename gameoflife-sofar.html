@@ -1,0 +1,146 @@
+<!-- This web page will, once debugged and expanded, play Conway's "The Game of Life,"
+	that is, will run cellular automata in that familiar pattern of replicating "life."
+	You can click any box in the table to change it from LIVE to DEAD or vice versa.
+	You should also be able to freeze/unfreeze time with a button
+	 and highlight the square you're on with mouseover
+	
+	Will Briggs, edited and updated by Adjua Ali Ansari
+	CS 385
+	Fall 2019
+	Dec. 6, 2019
+	-->
+<html>
+<head>
+ <script src="utilities.js" type="text/javascript"></script> <!-- provides function addEvent -->
+</head>
+<body bgColor="lightGrey">
+
+<center>The Game of Life
+
+ <p>Click in any square to change its value.</p>
+ <!-- Click freeze/unfreeze to start/stop the progress of the Game of Life -->
+ <button onclick="stopTimer()">
+	 Freeze/Unfreeze Display
+ </button>
+
+
+ <table width="600" height="600" bgColor="white">
+  <tr><td width="10%" height="10%"> </td><td width="10%" height="10%"> </td><td width="10%" height="10%"> </td><td width="10%" height="10%"> </td><td width="10%" height="10%"> </td><td width="10%" height="10%"> </td></tr>
+  <tr><td width="10%" height="10%"> </td><td width="10%" height="10%"> </td><td width="10%" height="10%"> </td><td width="10%" height="10%"> </td><td width="10%" height="10%"> </td><td width="10%" height="10%"> </td></tr>
+  <tr><td width="10%" height="10%"> </td><td width="10%" height="10%"> </td><td width="10%" height="10%"> </td><td width="10%" height="10%"> </td><td width="10%" height="10%"> </td><td width="10%" height="10%"> </td></tr>
+  <tr><td width="10%" height="10%"> </td><td width="10%" height="10%"> </td><td width="10%" height="10%"> </td><td width="10%" height="10%"> </td><td width="10%" height="10%"> </td><td width="10%" height="10%"> </td></tr>
+  <tr><td width="10%" height="10%"> </td><td width="10%" height="10%"> </td><td width="10%" height="10%"> </td><td width="10%" height="10%"> </td><td width="10%" height="10%"> </td><td width="10%" height="10%"> </td></tr>
+  <tr><td width="10%" height="10%"> </td><td width="10%" height="10%"> </td><td width="10%" height="10%"> </td><td width="10%" height="10%"> </td><td width="10%" height="10%"> </td><td width="10%" height="10%"> </td></tr>
+ </table>
+ <p id="time"></p> <!-- This is for the timer -->
+</center>
+
+<script>
+ 'use strict'
+
+  var ROWS = 6;		//How big is the table?
+  var CLMS = 6;
+  var LIVE = 'X';	//What constitutes a live or dead cell?
+  var DEAD = ' ';
+  //string variables that return the colors for live and dead cells
+  //for cells' background colors
+  var LiveColor = "black";
+  var DeadColor = "white";
+  //creates a new array of innerHTML in cells when called by myTimer
+  var newCells = [];
+  //boolean variable to tell whether or not freeze/unfreeze button was pressed 
+  var timerStopped = false;
+  //var myVar=setInterval(function(){myTimer()},1000);
+
+  //tell JS to listen for mousedown
+  // ... and when it does, it should reverse the style.backgroundColor of the cell
+  var myVar=setInterval(function(){myTimer()},1000);
+  
+  //reverses whichever condition for the timer condition
+  function stopTimer()
+  {
+	timerStopped = timerStopped == false ? true : false;
+  }
+   
+  function isInRange (row, clm)						//Is this cell location inside the table?
+  {
+    return row >= 0 && clm >= 0 && row < ROWS && clm < CLMS;
+  }
+
+  function countLivingNeighbors (cells, row, clm)	//How many live neighbors does the cell have?
+  {
+    var livingNeighbors = 0;
+
+    for (var r = row-1; r <= row+1; ++r)
+      for (var c = clm-1; c <= clm+1; ++c)
+        if (r != row || c != clm)         //Don't count position row, clm as neighbor of itself
+          if (isInRange (r, c))           //Don't count those off the bounds of the array cells
+            if (cells[r*CLMS+c].innerHTML == LIVE)
+              livingNeighbors++;
+
+    return livingNeighbors;
+  }
+
+  function myTimer()								//What happens when timer activates?  Next generation
+  {													// in the Game of Life
+	if(timerStopped == false)
+	{
+		var d=new Date();
+		var t=d.toLocaleTimeString();
+		document.getElementById("time").innerHTML=t;	//(And an update to the timer)
+		
+		var cells = document.getElementsByTagName ('TD');       //Get all cells
+		
+		//row and column values to be incremented and used in 
+		//countLivingNeighbors function
+		var row = 0;
+		var clm = 0;
+		
+		for (var i = 0, count = cells.length; i < count; ++i)	//Get what all cells shd be in next timeslice
+		{
+		 //condition for incrementing rows and resetting columns
+		 if(i > 1 && i%CLMS == 0)
+		 {
+		  ++row;
+		  clm = 0;
+		 }
+		 switch (countLivingNeighbors (cells, row, clm))
+		 {
+		  case 2: newCells[i] = cells[i].innerHTML; break;
+		  case 3: newCells[i] = LIVE; break;				//These are the rules of the Game of Life
+		  default: newCells[i] = DEAD; break;	
+		 }
+		 //increments columns after each evaluation
+		 ++clm;
+	 	}
+		for (i = 0, count = cells.length; i < count; ++i)  //Update table for new cell values
+		{
+		 cells[i].innerHTML = newCells[i];
+		 //cases for which background color to set for live or dead cells
+		 switch(cells[i].innerHTML)
+		 {
+		  case "X": cells[i].style.backgroundColor = LiveColor; break;
+		  case " ": cells[i].style.backgroundColor = DeadColor; break;
+		 }
+		}
+	}
+  }
+		//Listen for these events...
+  addEvent (document.body, 'click', flipCell); 	//Add a function to flip cell from live to dead or back on mouse click
+  //addEvent (document.button, 'click', stopTimer); //Add fuction to stop timer after button click
+  
+  function flipCell (e)							//Flip a cell from alive to dead or vice versa
+  {
+   if (typeof e == 'undefined') e = window.event //we always do this in an event handler, to make IE work
+   var target = e.target || e.srcElement;        //Another IE hack, so we can get the element the event relates to
+
+   if (target.tagName == 'TD')					 //If it's a table cell... flip it from live to dead or the reverse
+   {
+   	target.innerHTML = (target.innerHTML == 'X' ? ' ' : 'X');
+	//flips the background color similar to innerHTML flip above
+	target.style.backgroundColor = (target.style.backgroundColor == LiveColor ? DeadColor : LiveColor);
+   }
+  } 
+</script>
+</body>
+</html>
